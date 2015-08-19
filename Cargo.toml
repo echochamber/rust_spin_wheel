@@ -7,3 +7,4 @@ authors = ["Jason Schein <jschein@apple.com>"]
 piston = "0.4.1"
 piston_window = "0.8.0"
 piston2d-graphics = "0.4.1"
+rand = "0.3"
