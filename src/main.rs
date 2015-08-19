@@ -1,67 +1,77 @@
 extern crate piston_window;
-extern crate graphics;
 extern crate piston;
+extern crate rand;
 
+use std::cell::RefCell;
+use std::env::current_exe;
 use piston_window::*;
+use std::f64::consts::PI;
 
-mod wheel;
+// mod wheel;
+mod game_grid;
+mod game;
+mod models;
+mod display;
 
 fn main() {
+    // Tinker with these for some fun
+    let settings = game::GameSettings {
+        projectile_spawn_interval: 2.0,
+        projectile_initial_speed: 150.0,
+        size: 800.0,
+        ring_radius: 100.0,
+        ring_thickness: 4.0,
+        min_projectile_spawn_distance: 350.0,
+        max_projectile_spawn_distance: 375.0,
+        projectile_radius: 10.0,
+        ring_turn_rate: 1.0 * PI
+    };
 
-    // Variables for the piston window
+    // Create window
+    let window_size = settings.size + 200.0;
     let opengl = OpenGL::V3_2;
-    let (width, height) = (800, 800);
-    let window: PistonWindow =
-        WindowSettings::new("spin_wheel_game", (width, height))
-        //.samples(4)
-        //.vsync(true)
+    let (width, height) = (window_size as u32, window_size as u32);
+    let window: PistonWindow = PistonWindow::build_from_window_settings(
+        WindowSettings::new("spin_wheel_game", (width, height + 20))
+        .samples(4)
+        .vsync(true)
         .exit_on_esc(true)
         .opengl(opengl)
-        .into();
 
-    let mut current = 60.0;
-    let mut pressed = true;
+    ).unwrap();
+
+    // Create game 
+    let resource_path = current_exe().unwrap().parent().unwrap().to_owned().join("resources/");
+    let resources = game::Resources {
+        font: RefCell::new(Glyphs::new(
+            &resource_path.join("fonts/FiraMono-Bold.ttf"),
+            window.factory.borrow().clone()
+        ).unwrap())
+    };
+
+    let mut game = game::Game::new(settings, resources);
+
+
     for e in window {
         match e.event {
+            Some(Event::Input(Input::Press(Button::Keyboard(key)))) => {
+                game.key_press(key);
+            }
+
+            Some(Event::Input(Input::Release(Button::Keyboard(key)))) => {
+                game.key_release(key);
+            }
+
             Some(Event::Render(_)) => {
                 e.draw_2d(|c, g| {
-                    clear([1.0, 1.0, 1.0, 1.0], g);
-                    arc(
-                    	[0.3, 0.3, 0.6, 1.0],
-                    	4.0,
-                    	::std::f64::consts::PI * 0.25,
-                    	::std::f64::consts::PI * 1.25,
-                    	[370.0, 370.0, 60.0, 60.0],
-						c.transform,
-						g
-					);
-
-     //                let elipse = Ellipse::new_border([0.3, 0.3, 0.6, 1.0], 4.0)
-     //                	.resolution(512);
-
-     //                let pos = (width as f64 - current) / 2.0;
-
-     //                Ellipse::draw(
-					// 	&elipse,
-					// 	[pos, pos, current, current],
-					// 	&c.draw_state,
-					// 	c.transform,
-					// 	g
-					// );
+                	game.render(c.trans(100.0, 100.0), g)
                 });
-            },
-            Some(Event::Update(_)) => {
-            	if pressed {
-            		current = current + (current * 0.005);
-            	}
-            	if current > 800.0 {
-            		current = 60.0;
-            	}
-            },
-            Some(Event::Input(Input::Press(Button::Keyboard(Key::Space)))) => {
-                pressed = !pressed;
-            },
-            
+            }
+
+            Some(Event::Update(args)) => {
+                game.update(args.dt);
+            }
+
             _ => {}
         }
     }
