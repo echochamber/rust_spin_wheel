@@ -9,6 +9,7 @@ use std::f64::consts::PI;
 mod wheel;
 mod game;
 mod world;
+mod meteorite;
 
 const RED: graphics::types::Color = [1.0, 0.0, 0.0, 1.0];
 const GREEN: graphics::types::Color = [0.0, 1.0, 0.0, 1.0];
@@ -26,7 +27,7 @@ fn main() {
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
     let window: PistonWindow =
-        WindowSettings::new("spin_wheel_game", (width, height))
+        WindowSettings::new("spin_wheel_game", (width, height + 20))
         .samples(4)
         .vsync(true)
         .exit_on_esc(true)

@@ -16,7 +16,10 @@ pub struct Game {
     /// A random number generator
     rng: ThreadRng,
     /// Turn rate in radians per second
-    turn_rate: f64
+    turn_rate: f64,
+
+    /// The size of the games viewport
+    size: f64
 }
 
 /// Active actions (toggled by user input)
@@ -42,14 +45,18 @@ impl Game {
             actions: Actions::default(),
             timers: Timers::default(),
             rng: rng,
-            turn_rate: 0.15 * PI
+            turn_rate: 0.15 * PI,
+            size: 800.0
         }
     }
 
     pub fn render(&self, c: Context, g: &mut G2d) {
 		clear([0.75, 0.75, 0.75, 1.0], g);
-        
-        self.world.render(c, g);
+
+
+		// Horzontally center the world, but vertically align it with the bottom of the game viewport.
+		let offset = self.size - self.world.size;
+        self.world.render(c.trans(offset / 2.0, offset), g);
     }
 
     pub fn update(&mut self, dt: f64) {
