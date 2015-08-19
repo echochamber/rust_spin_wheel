@@ -1,0 +1,9 @@
+[package]
+name = "spin_wheel_game"
+version = "0.1.0"
+authors = ["Jason Schein <jschein@apple.com>"]
+
+[dependencies]
+piston = "0.4.1"
+piston_window = "0.8.0"
+piston2d-graphics = "0.4.1"
