@@ -1,10 +1,5 @@
-use ::graphics::types::Color;
 use piston_window::*;
-
-const RED: ::graphics::types::Color = [1.0, 0.0, 0.0, 1.0];
-const GREEN: ::graphics::types::Color = [0.0, 1.0, 0.0, 1.0];
-const BLUE: ::graphics::types::Color = [0.0, 0.0, 1.0, 1.0];
-const YELLOW: ::graphics::types::Color = [1.0, 1.0, 0.0, 1.0];
+use graphics::types::Color;
 
 #[derive(Default)]
 pub struct Velocity {
@@ -12,35 +7,32 @@ pub struct Velocity {
 	pub direction: f64 // Radians
 }
 
-#[derive(Default)]
-pub struct Position {
-	pub x: f64,
-	pub y: f64
-}
-
 pub struct Meteorite {
-	velocity: Velocity,
-	position: Position,
-	color: Color,
-	radius: f64
+    vector: Vector
 }
 
 impl Meteorite {
-	pub fn new(pos: Position, color: Color) -> Meteorite {
+	pub fn new(pos: Point, velocity: Velocity, color: Color) -> Meteorite {
 		Meteorite {
 			position: pos,
-			velocity: Velocity::default(),
+			velocity: velocity,
 			color: color,
 			radius: 2.0
 		}
 	}
 
 	pub fn render(&self, c: Context, g: &mut G2d) {
-        Ellipse::new(BLUE).draw(
+        Ellipse::new(colors::BLUE).draw(
             [self.position.x - self.radius, self.position.y - self.radius, self.radius * 2.0, self.radius * 2.0],
             &c.draw_state,
             c.transform,
             g
         );
+    }
+
+    pub fn move_units(&mut self, dt: f64) {
+    	let units = dt * self.velocity.speed;
+    	self.position.x += self.velocity.direction.cos() * units;
+    	self.position.y += self.velocity.direction.sin() * units;
     }
 }

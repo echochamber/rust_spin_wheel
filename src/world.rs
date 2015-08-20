@@ -1,3 +1,4 @@
+use rand::{self, ThreadRng, Rng};
 use std::f64::consts::PI;
 use piston_window::*;
 use meteorite::*;
@@ -10,7 +11,8 @@ const YELLOW: ::graphics::types::Color = [1.0, 1.0, 0.0, 1.0];
 pub struct World {
 	pub ring: Ring,
 	pub size: f64,
-	meteorites: Vec<Meteorite>,
+	pub size_region: Region,
+	pub meteorites: Vec<Meteorite>,
 }
 
 pub struct Ring {
@@ -23,8 +25,24 @@ impl World {
 		World {
 			ring: Ring::new(),
 			meteorites: Vec::with_capacity(1000),
-			size: 700.0
+			size: 700.0,
+			size_region: (700.0, 700.0).into()
 		}
+	}
+
+	pub fn generate_new_meteor(&mut self, rng: &mut ThreadRng) {
+		let speed = rng.gen_range(200.0, 400.0) as f64;
+		let rand_rad = rng.gen_range(0.0, 2.0 * PI) as f64;
+
+		let offset = (self.size) / 2.0;
+        let y = self.size * rand_rad.sin() / 2.0 + offset;
+        let x = self.size * rand_rad.cos() / 2.0 + offset;
+        let position = Point {x: x, y: y};
+
+        let velocity = Velocity { speed: speed, direction: rand_rad + PI };
+
+        let new_meteor = Meteorite::new(position, velocity, BLUE);
+        self.meteorites.push(new_meteor);
 	}
 
 	pub fn render(&self, c: Context, g: &mut G2d) {

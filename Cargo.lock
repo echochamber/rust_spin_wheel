@@ -6,6 +6,7 @@ dependencies = [
  "piston2d-graphics 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "piston_window 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vecmath 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
