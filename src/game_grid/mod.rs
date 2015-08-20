@@ -17,7 +17,6 @@ impl Into<Point> for (f64, f64) {
     }
 }
 
-
 pub trait Position {
     /// Returns the x coordinate of the object
     fn x(&self) -> f64;
@@ -44,9 +43,7 @@ pub trait Velocity {
 
     // Direction in radians
     fn direction(&self) -> f64;
-    fn direction_mut(&mut self) -> &mut f64;
-
-    
+    fn direction_mut(&mut self) -> &mut f64; 
 }
 
 pub trait Moving: Position + Velocity {
@@ -68,14 +65,14 @@ pub trait Moving: Position + Velocity {
     }
 }
 
-pub trait Turning: Position {
+pub trait Turning: Velocity {
 
-    // Rate of turning in radians/second
+    /// Rate of turning in radians/second
     fn turn_rate(&self) -> f64;
-
     fn turn_rate_mut(&mut self) -> &mut f64;
 
+    /// Turns the object the amount it would turn in dt seconds.
     fn turn_time(&mut self, dt: f64) {
-        *self.turn_rate_mut() += dt * self.turn_rate()
+        *self.direction_mut() += dt * self.turn_rate()
     }
 }

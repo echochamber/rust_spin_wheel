@@ -1,8 +1,8 @@
 use rand::{self, ThreadRng, Rng};
 use std::f64::consts::PI;
 use piston_window::*;
-use world::*;
-use meteorite::*;
+use models::*;
+use game_grid::*;
 
 const RED: ::graphics::types::Color = [1.0, 0.0, 0.0, 1.0];
 const GREEN: ::graphics::types::Color = [0.0, 1.0, 0.0, 1.0];
@@ -22,14 +22,8 @@ pub struct Game {
     timers: Timers,
     /// A random number generator
     rng: ThreadRng,
-    /// Turn rate in radians per second
-    turn_rate: f64,
-
     /// The size of the games viewport
-    size: f64,
-
-    /// The region it occupies
-    size_region: Region
+    size: f64
 }
 
 /// Active actions (toggled by user input)
@@ -50,14 +44,12 @@ impl Game {
 	pub fn new() -> Game {
         let mut rng = rand::thread_rng();
         Game {
-            world: World::new(),
+            world: World::new(700.0),
             score: 0,
             actions: Actions::default(),
             timers: Timers::default(),
             rng: rng,
-            turn_rate: 0.15 * PI,
-            size: 800.0,
-            size_region: (800.0, 800.0).into()
+            size: 800.0
         }
     }
 
@@ -79,30 +71,10 @@ impl Game {
         self.timers.current_time += dt;
 
         if self.actions.rotate_c_clockwise {
-            self.world.ring.rotation -= dt * self.turn_rate;
+            self.world.ring.turn_time(-dt);
         }
         if self.actions.rotate_clockwise {
-            self.world.ring.rotation += dt * self.turn_rate;
-        }
-
-        // Move enemies in the player's direction
-        for meteorite in &mut self.world.meteorites {
-            meteorite.move_units(dt);
-        }
-
-        // Remove bullets outside the viewport
-        { // Shorten the lifetime of size
-	        let size = &self.world.size_region;
-	        self.world.meteorites.retain(|b| size.contains(b.position));
-        }
-
-
-        // Spawn enemies at random locations
-        if self.timers.current_time - self.timers.last_spawned_projectile > 2.0 {
-            self.timers.last_spawned_projectile = self.timers.current_time;
-            
-            self.world.generate_new_meteor(&mut self.rng);
-            println!("HIT");
+            self.world.ring.turn_time(dt);
         }
     }
 
