@@ -11,15 +11,12 @@ use std::f64::consts::PI;
 mod game_grid;
 mod game;
 mod models;
+mod display;
 
 fn main() {
     
 
-    let window_size = 800.0;
-    // let ring_size = 200.0;
-    // let ring_pos = (window_size - ring_size) / 2.0;
-    // let turn_rate = 0.005;
-
+    let window_size = 1000.0;
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
     let window: PistonWindow =
@@ -30,7 +27,17 @@ fn main() {
         .opengl(opengl)
         .into();
 
-    let mut game = game::Game::new();
+    let mut game = game::Game::new(game::GameSettings {
+        projectile_spawn_interval: 1.0,
+        projectile_initial_speed: 150.0,
+        size: 800.0,
+        ring_radius: 100.0,
+        ring_thickness: 4.0,
+        min_projectile_spawn_distance: 350.0,
+        max_projectile_spawn_distance: 375.0,
+        projectile_radius: 10.0,
+        ring_turn_rate: 1.0 * PI
+    });
 
     for e in window {
         match e.event {
@@ -44,7 +51,7 @@ fn main() {
 
             Some(Event::Render(args)) => {
                 e.draw_2d(|c, g| {
-                	game.render(c, g)
+                	game.render(c.trans(100.0, 100.0), g)
                 });
             }
 

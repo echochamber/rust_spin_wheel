@@ -1,8 +1,51 @@
 use std::f64::consts::PI;
 
+#[derive(Debug, Clone, Copy)]
 pub struct Point {
     pub x: f64,
     pub y: f64
+}
+
+impl Point {
+
+    pub fn new_offset_polar(origin: &Point, r: f64, theta: f64) -> Point {
+        Point {
+            x: origin.x + r * theta.cos(),
+            y: origin.y + r * theta.sin()
+        }
+    }
+
+    /// Angle between two points in radians
+    pub fn angle_between(&self, p: &Point) -> f64 {
+        let m = (self.y - p.y) / (self.x - p.x);
+
+        return if p.x > self.x {
+            m.atan()
+        } else {
+            m.atan() + PI
+        }
+    }
+
+    pub fn squared_distance_to(&self, p: &Point) -> f64 {
+        (self.x - p.x) * (self.x - p.x)
+        + (self.y - p.y) * (self.y - p.y)
+    }
+}
+
+pub struct RectArea {
+    pub p1: Point,
+    pub p2: Point
+}
+
+pub trait Area {
+    fn contains(&self, p: &Point) -> bool;
+}
+
+impl Area for RectArea {
+    fn contains(&self, p: &Point) -> bool {
+        (p.x > self.p1.x) ^ (p.x > self.p2.x) &&
+        (p.y > self.p1.y) ^ (p.y > self.p2.y)
+    }
 }
 
 // (x, y) coordinates
@@ -43,27 +86,23 @@ pub trait Velocity {
 
     // Direction in radians
     fn direction(&self) -> f64;
-    fn direction_mut(&mut self) -> &mut f64; 
+    fn direction_mut(&mut self) -> &mut f64;
 }
 
-pub trait Moving: Position + Velocity {
+pub trait Moving: Velocity + Position {
     /// dt is the change in time since the position was last updated
     fn move_time(&mut self, dt: f64) {
-        *self.x_mut() += self.direction().cos() * self.speed();
-        *self.y_mut() += self.direction().sin() * self.speed();
+        *self.x_mut() += self.direction().cos() * self.speed() * dt;
+        *self.y_mut() += self.direction().sin() * self.speed() * dt;
     }
 
     /// Changes the direction of the vector to point to the given target
-    fn point_to<T: Position>(&mut self, target: T) {
-        let m = (self.y() - target.y()) / (self.x() - target.x());
-
-        *self.direction_mut() = if target.x() > self.x() {
-            m.atan()
-        } else {
-            m.atan() + PI
-        };
+    fn point_to(&mut self, p: &Point) {
+        *self.direction_mut() = self.position().angle_between(p);
     }
 }
+
+impl<T> Moving for T where T: Velocity + Position {}
 
 pub trait Turning: Velocity {
 
@@ -73,6 +112,14 @@ pub trait Turning: Velocity {
 
     /// Turns the object the amount it would turn in dt seconds.
     fn turn_time(&mut self, dt: f64) {
-        *self.direction_mut() += dt * self.turn_rate()
+        *self.direction_mut() += dt * self.turn_rate();
+
+        if self.direction() >= 2.0 * PI {
+            *self.direction_mut() -= 2.0 * PI;
+        }
+
+        if self.direction() < 0.0 {
+            *self.direction_mut() += 2.0 * PI;
+        }
     }
 }
