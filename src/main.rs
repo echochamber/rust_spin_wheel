@@ -3,7 +3,8 @@ extern crate graphics;
 extern crate piston;
 extern crate rand;
 
-
+use std::cell::RefCell;
+use std::env::current_exe;
 use piston_window::*;
 use std::f64::consts::PI;
 
@@ -16,6 +17,7 @@ mod display;
 fn main() {
     
 
+    // Create window
     let window_size = 1000.0;
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
@@ -27,7 +29,15 @@ fn main() {
         .opengl(opengl)
         .into();
 
-    let mut game = game::Game::new(game::GameSettings {
+    // Create game 
+    let resource_path = current_exe().unwrap().parent().unwrap().to_owned().join("resources/");
+    let resources = game::Resources {
+        font: RefCell::new(Glyphs::new(
+            &resource_path.join("fonts/FiraMono-Bold.ttf"),
+            window.factory.borrow().clone()
+        ).unwrap())
+    };
+    let settings = game::GameSettings {
         projectile_spawn_interval: 1.0,
         projectile_initial_speed: 150.0,
         size: 800.0,
@@ -37,7 +47,9 @@ fn main() {
         max_projectile_spawn_distance: 375.0,
         projectile_radius: 10.0,
         ring_turn_rate: 1.0 * PI
-    });
+    };
+    let mut game = game::Game::new(settings, resources);
+
 
     for e in window {
         match e.event {

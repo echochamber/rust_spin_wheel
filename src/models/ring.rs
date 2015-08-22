@@ -28,7 +28,7 @@ impl Ring {
 
 	pub fn render(&self, c: Context, g: &mut G2d) {
         circle_arc(
-        	GameColors::Red.to_color(),
+        	GameColors::Red.into(),
         	self.thickness,
         	PI * 0.0 + self.direction,
         	PI * 0.5 + self.direction,
@@ -38,7 +38,7 @@ impl Ring {
 		);
 
 		circle_arc(
-        	GameColors::Green.to_color(),
+        	GameColors::Green.into(),
         	self.thickness,
         	PI * 0.5 + self.direction,
         	PI * 1.0 + self.direction,
@@ -48,7 +48,7 @@ impl Ring {
 		);
 
 		circle_arc(
-        	GameColors::Blue.to_color(),
+        	GameColors::Blue.into(),
         	self.thickness,
         	PI * 1.0 + self.direction,
         	PI * 1.5 + self.direction,
@@ -58,7 +58,7 @@ impl Ring {
 		);
 
 		circle_arc(
-        	GameColors::Yellow.to_color(),
+        	GameColors::Yellow.into(),
         	self.thickness,
         	PI * 1.5 + self.direction,
         	PI * 2.0 + self.direction,

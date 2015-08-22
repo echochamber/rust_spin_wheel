@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use rand::{self, ThreadRng, Rng};
 use std::f64::consts::PI;
 use piston_window::*;
@@ -20,8 +21,11 @@ pub struct Game {
     /// A random number generator
     rng: ThreadRng,
     /// The size of the games viewport
-    settings: GameSettings
+    settings: GameSettings,
+
+    resources: Resources
 }
+
 
 /// Active actions (toggled by user input)
 #[derive(Default)]
@@ -35,6 +39,11 @@ struct Actions {
 struct Timers {
     current_time: f64,
     last_spawned_projectile: f64
+}
+
+/// Additional resources needed for the game
+pub struct Resources {
+    pub font: RefCell<Glyphs>
 }
 
 #[derive(Clone)]
@@ -56,14 +65,18 @@ pub struct GameSettings {
 
     pub projectile_radius: f64,
 
+    /// thickness of the ring
     pub ring_thickness: f64,
 
+    /// Units
     pub ring_radius: f64,
+
+    /// Radians per second
     pub ring_turn_rate: f64
 }
 
 impl Game {
-	pub fn new(settings: GameSettings) -> Game {
+	pub fn new(settings: GameSettings, resources: Resources) -> Game {
         let mut rng = rand::thread_rng();
         Game {
             world: World::new(
@@ -74,12 +87,27 @@ impl Game {
             actions: Actions::default(),
             timers: Timers::default(),
             rng: rng,
-            settings: settings
+            settings: settings,
+            resources: resources
         }
     }
 
+    // Is there a way to have &self rather than &mut self
+    // currently the only reason is that text.draw requires a 
+    // mutable reference to the GlyphCache 
     pub fn render(&self, c: Context, g: &mut G2d) {
-		clear([0.75, 0.75, 0.75, 1.0], g);
+
+        clear([0.75, 0.75, 0.75, 1.0], g);
+
+        // Render the score
+        {
+            let mut text = Text::colored(GameColors::Orange.into(), 22);
+            text.draw(&format!("Score: {}", 200),
+                &mut *self.resources.font.borrow_mut(),
+                &c.draw_state,
+                c.trans(10.0, 20.0).transform,
+            g);
+        }
 
         let border = Rectangle::new_border([0.0, 0.0, 0.0, 1.0], 2.0);
         border.draw(
@@ -157,10 +185,10 @@ impl Game {
 
     fn rand_color(&mut self) -> Color {
         match self.rng.gen_range(0, 4) {
-            0 => { GameColors::Red.to_color() },
-            1 => { GameColors::Green.to_color() },
-            2 => { GameColors::Blue.to_color() },
-            3 => { GameColors::Yellow.to_color() },
+            0 => { GameColors::Red.into() },
+            1 => { GameColors::Green.into() },
+            2 => { GameColors::Blue.into() },
+            3 => { GameColors::Yellow.into() },
             _ => { panic!("Rng generated a number outside expected range? Wtf?") }
         }
     }

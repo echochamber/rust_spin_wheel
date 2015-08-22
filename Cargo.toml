@@ -2,6 +2,7 @@
 name = "spin_wheel_game"
 version = "0.1.0"
 authors = ["Jason Schein <jschein@apple.com>"]
+build = "build.rs"
 
 [dependencies]
 piston = "0.4.1"
