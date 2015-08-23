@@ -6,6 +6,15 @@ pub struct Point {
     pub y: f64
 }
 
+pub fn reduce_radians(rad: f64) -> f64{
+    return if rad < 0.0 {
+            rad + 2.0 * PI
+        } else if rad > 2.0 * PI {
+            rad - 2.0 * PI
+        } else {
+            rad
+        }
+}
 impl Point {
 
     pub fn new_offset_polar(origin: &Point, r: f64, theta: f64) -> Point {
@@ -17,13 +26,7 @@ impl Point {
 
     /// Angle between two points in radians
     pub fn angle_between(&self, p: &Point) -> f64 {
-        let m = (self.y - p.y) / (self.x - p.x);
-
-        return if p.x > self.x {
-            m.atan()
-        } else {
-            m.atan() + PI
-        }
+        return reduce_radians((self.y - p.y).atan2(self.x - p.x));
     }
 
     pub fn squared_distance_to(&self, p: &Point) -> f64 {
@@ -112,14 +115,7 @@ pub trait Turning: Velocity {
 
     /// Turns the object the amount it would turn in dt seconds.
     fn turn_time(&mut self, dt: f64) {
-        *self.direction_mut() += dt * self.turn_rate();
-
-        if self.direction() >= 2.0 * PI {
-            *self.direction_mut() -= 2.0 * PI;
-        }
-
-        if self.direction() < 0.0 {
-            *self.direction_mut() += 2.0 * PI;
-        }
+        let rate = self.direction() + dt * self.turn_rate();
+        *self.direction_mut() = reduce_radians(rate);
     }
 }

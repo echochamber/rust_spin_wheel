@@ -6,7 +6,7 @@ const BLUE: Color = [0.0, 0.0, 1.0, 1.0];
 const YELLOW: Color = [1.0, 1.0, 0.0, 1.0];
 const ORANGE: Color =  [1.0, 0.5, 0.0, 1.0];
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum GameColors {
     Red,
     Green,

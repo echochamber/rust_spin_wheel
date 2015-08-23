@@ -27,81 +27,61 @@ impl Ring {
 	}
 
 	pub fn render(&self, c: Context, g: &mut G2d) {
-        circle_arc(
-        	GameColors::Red.into(),
-        	self.thickness,
-        	PI * 0.0 + self.direction,
-        	PI * 0.5 + self.direction,
-        	[-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0],
-			c.transform,
-			g
-		);
+		CircleArc::new(GameColors::Red.into(), self.thickness, PI * 0.0 + self.direction, PI * 0.5 + self.direction)
+			.resolution(256)
+			.draw([-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0], &c.draw_state, c.transform, g);
 
-		circle_arc(
-        	GameColors::Green.into(),
-        	self.thickness,
-        	PI * 0.5 + self.direction,
-        	PI * 1.0 + self.direction,
-        	[-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0],
-			c.transform,
-			g
-		);
+        CircleArc::new(GameColors::Green.into(), self.thickness, PI * 0.5 + self.direction, PI * 1.0 + self.direction)
+			.resolution(256)
+			.draw([-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0], &c.draw_state, c.transform, g);
 
-		circle_arc(
-        	GameColors::Blue.into(),
-        	self.thickness,
-        	PI * 1.0 + self.direction,
-        	PI * 1.5 + self.direction,
-        	[-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0],
-			c.transform,
-			g
-		);
+        CircleArc::new(GameColors::Blue.into(), self.thickness, PI * 1.0 + self.direction, PI * 1.5 + self.direction)
+			.resolution(256)
+			.draw([-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0], &c.draw_state, c.transform, g);
 
-		circle_arc(
-        	GameColors::Yellow.into(),
-        	self.thickness,
-        	PI * 1.5 + self.direction,
-        	PI * 2.0 + self.direction,
-        	[-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0],
-			c.transform,
-			g
-		);
+        CircleArc::new(GameColors::Yellow.into(), self.thickness, PI * 1.5 + self.direction, PI * 2.0 + self.direction)
+			.resolution(256)
+			.draw([-self.radius, -self.radius, self.radius * 2.0, self.radius * 2.0], &c.draw_state, c.transform, g);
 	}
 
 	pub fn get_color_at_radian(&self, theta: f64) -> GameColors {
-		if is_in_bounds(theta, self.red_bounds()) {
+		let unit_theta = reduce_radians(theta);
+
+		if is_in_bounds(unit_theta, self.red_bounds()) {
 			return GameColors::Red;
 		}
 
-		if is_in_bounds(theta, self.green_bounds()) {
+		if is_in_bounds(unit_theta, self.green_bounds()) {
 			return GameColors::Green;
 		}
 
-		if is_in_bounds(theta, self.blue_bounds()) {
+		if is_in_bounds(unit_theta, self.blue_bounds()) {
 			return GameColors::Blue;
 		}
 
-		if is_in_bounds(theta, self.yellow_bounds()) {
+		if is_in_bounds(unit_theta, self.yellow_bounds()) {
 			return GameColors::Yellow;
 		}
+
+		panic!("Out of radian bounds [0, 2π]");
 
 		return GameColors::Yellow;
 	}
 
 	fn red_bounds(&self) -> (f64, f64) {
-		(self.direction + PI * 0.0, self.direction + PI * 0.5)
+		(reduce_radians(self.direction), reduce_radians(self.direction + PI * 0.5))
 	}
 
 	fn green_bounds(&self) -> (f64, f64) {
-		(self.direction + PI * 0.5, self.direction + PI * 1.0)
+		(reduce_radians(self.direction + PI * 0.5), reduce_radians(self.direction + PI * 1.0))
 	}
 
 	fn blue_bounds(&self) -> (f64, f64) {
-		(self.direction + PI * 1.0, self.direction + PI * 1.5)
+		(reduce_radians(self.direction + PI * 1.0), reduce_radians(self.direction + PI * 1.5))
 	}
 
 	fn yellow_bounds(&self) -> (f64, f64) {
-		(self.direction + PI * 1.5, self.direction + PI * 0.0)
+		(reduce_radians(self.direction + PI * 1.5), reduce_radians(self.direction))
 	}
 }
 

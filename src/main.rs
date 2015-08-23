@@ -15,7 +15,6 @@ mod models;
 mod display;
 
 fn main() {
-    
 
     // Create window
     let window_size = 1000.0;
@@ -38,7 +37,7 @@ fn main() {
         ).unwrap())
     };
     let settings = game::GameSettings {
-        projectile_spawn_interval: 1.0,
+        projectile_spawn_interval: 4.0,
         projectile_initial_speed: 150.0,
         size: 800.0,
         ring_radius: 100.0,

@@ -23,6 +23,7 @@ pub struct Game {
     /// The size of the games viewport
     settings: GameSettings,
 
+    /// Resources, font ect...
     resources: Resources
 }
 
@@ -72,7 +73,7 @@ pub struct GameSettings {
     pub ring_radius: f64,
 
     /// Radians per second
-    pub ring_turn_rate: f64
+    pub ring_turn_rate: f64,
 }
 
 impl Game {
@@ -92,9 +93,6 @@ impl Game {
         }
     }
 
-    // Is there a way to have &self rather than &mut self
-    // currently the only reason is that text.draw requires a 
-    // mutable reference to the GlyphCache 
     pub fn render(&self, c: Context, g: &mut G2d) {
 
         clear([0.75, 0.75, 0.75, 1.0], g);
@@ -102,7 +100,7 @@ impl Game {
         // Render the score
         {
             let mut text = Text::colored(GameColors::Orange.into(), 22);
-            text.draw(&format!("Score: {}", 200),
+            text.draw(&format!("Score: {}", self.score),
                 &mut *self.resources.font.borrow_mut(),
                 &c.draw_state,
                 c.trans(10.0, 20.0).transform,
@@ -150,9 +148,23 @@ impl Game {
             let ring_radius = self.settings.ring_radius;
             let ring_thickness = self.settings.ring_thickness;
             let projectile_radius = self.settings.projectile_radius;
+            let ring = &self.world.ring;
+            let mut scored = 0;
             self.world.projectiles.retain(|b|
-                b.position.squared_distance_to(&center).sqrt() > ring_radius + (projectile_radius + ring_thickness) / 2.0
+                {
+                    let retain = b.position.squared_distance_to(&center).sqrt() > ring_radius + (projectile_radius + ring_thickness) / 2.0;
+
+                    if !retain  {
+                        if ring.get_color_at_radian(b.position.angle_between(&ring.position)) == b.color {
+                            scored += 50;
+                        };
+                    }
+                    
+                    retain
+                }
             );
+
+            self.score += scored;
         }
     }
 
@@ -162,7 +174,7 @@ impl Game {
             let theta = self.rng.gen_range(0.0, 2.0) * PI;
             let r = self.rng.gen_range(self.settings.min_projectile_spawn_distance, self.settings.max_projectile_spawn_distance);
             let p: Point = Point::new_offset_polar(&self.world.center(), r, theta);
-            let direction = p.angle_between(&self.world.center());
+            let direction = self.world.center().angle_between(&p);
             let projectile = Projectile::new(
                 p.clone(),
                 direction,
@@ -183,12 +195,12 @@ impl Game {
         }
     }
 
-    fn rand_color(&mut self) -> Color {
+    fn rand_color(&mut self) -> GameColors {
         match self.rng.gen_range(0, 4) {
-            0 => { GameColors::Red.into() },
-            1 => { GameColors::Green.into() },
-            2 => { GameColors::Blue.into() },
-            3 => { GameColors::Yellow.into() },
+            0 => { GameColors::Red },
+            1 => { GameColors::Green },
+            2 => { GameColors::Blue },
+            3 => { GameColors::Yellow },
             _ => { panic!("Rng generated a number outside expected range? Wtf?") }
         }
     }
