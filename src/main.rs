@@ -1,11 +1,13 @@
 extern crate piston_window;
 extern crate piston;
 extern crate rand;
+extern crate sdl2_window;
 
 use std::cell::RefCell;
 use std::env::current_exe;
 use piston_window::*;
 use std::f64::consts::PI;
+use sdl2_window::Sdl2Window;
 
 // mod wheel;
 mod game_grid;
@@ -31,14 +33,13 @@ fn main() {
     let window_size = settings.size + 200.0;
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
-    let window: PistonWindow = PistonWindow::build_from_window_settings(
-        WindowSettings::new("spin_wheel_game", (width, height + 20))
+    let window: PistonWindow<(), Sdl2Window> =  WindowSettings::new("spin_wheel_game", (width, height + 20))
         .samples(4)
         .vsync(true)
         .exit_on_esc(true)
         .opengl(opengl)
-
-    ).unwrap();
+        .build()
+        .unwrap();
 
     // Create game 
     let resource_path = current_exe().unwrap().parent().unwrap().to_owned().join("resources/");

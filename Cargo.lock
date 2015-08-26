@@ -4,8 +4,8 @@ version = "0.1.0"
 dependencies = [
  "piston 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "piston_window 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pistoncore-sdl2_window 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "vecmath 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -532,6 +532,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "pistoncore-sdl2_window"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "gl 0.0.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pistoncore-input 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pistoncore-window 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sdl2 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "shader_version 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "pistoncore-window"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -565,6 +577,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "rustc-serialize"
 version = "0.3.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "sdl2"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "bitflags 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num 0.1.27 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.3.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sdl2-sys 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "sdl2-sys"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num 0.1.27 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "shader_version"

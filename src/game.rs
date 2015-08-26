@@ -103,7 +103,8 @@ impl Game {
                 &mut *self.resources.font.borrow_mut(),
                 &c.draw_state,
                 c.trans(10.0, 20.0).transform,
-            g);
+                g
+            );
         }
 
         let border = Rectangle::new_border([0.0, 0.0, 0.0, 1.0], 2.0);
