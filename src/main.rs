@@ -33,7 +33,7 @@ fn main() {
     let window_size = settings.size + 200.0;
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
-    let window: PistonWindow<(), Sdl2Window> =  WindowSettings::new("spin_wheel_game", (width, height + 20))
+    let mut window: PistonWindow<Sdl2Window> =  WindowSettings::new("spin_wheel_game", (width, height + 20))
         .samples(4)
         .vsync(true)
         .exit_on_esc(true)
@@ -46,30 +46,29 @@ fn main() {
     let resources = game::Resources {
         font: RefCell::new(Glyphs::new(
             &resource_path.join("fonts/FiraMono-Bold.ttf"),
-            window.factory.borrow().clone()
+            window.factory.clone()
         ).unwrap())
     };
 
     let mut game = game::Game::new(settings, resources);
 
-
-    for e in window {
-        match e.event {
-            Some(Event::Input(Input::Press(Button::Keyboard(key)))) => {
+    while let Some(e) = window.next() {
+        match e {
+            Event::Input(Input::Press(Button::Keyboard(key))) => {
                 game.key_press(key);
             }
 
-            Some(Event::Input(Input::Release(Button::Keyboard(key)))) => {
+            Event::Input(Input::Release(Button::Keyboard(key))) => {
                 game.key_release(key);
             }
 
-            Some(Event::Render(_)) => {
-                e.draw_2d(|c, g| {
-                	game.render(c.trans(100.0, 100.0), g)
+            Event::Render(_) => {
+                window.draw_2d(&e, |c, g| {
+                    game.render(c.trans(100.0, 100.0), g)
                 });
             }
 
-            Some(Event::Update(args)) => {
+            Event::Update(args) => {
                 game.update(args.dt);
             }
 

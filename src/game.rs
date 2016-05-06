@@ -98,7 +98,7 @@ impl Game {
 
         // Render the score
         {
-            let text = Text::colored(GameColors::Orange.into(), 22);
+            let text = Text::new_color(GameColors::Orange.into(), 22);
             text.draw(&format!("Score: {}", self.score),
                 &mut *self.resources.font.borrow_mut(),
                 &c.draw_state,
