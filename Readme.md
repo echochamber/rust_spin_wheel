@@ -2,6 +2,8 @@
 
 Simple game made with [piston](https://github.com/PistonDevelopers/piston). Particals spawn and fall towards the ring. Try to catch the particals on their matching color.
 
+![Screenshot](resources/screenshots/rust_spin_wheel.gif)
+
 Controls:
 
 * Up: Rotate the ring counter clockwise
