@@ -31,7 +31,11 @@ pub struct Game {
 #[derive(Default)]
 struct Actions {
     rotate_clockwise: bool,
-    rotate_c_clockwise: bool
+    rotate_c_clockwise: bool,
+    move_up: bool,
+    move_left: bool,
+    move_right: bool,
+    move_down: bool
 }
 
 /// Timers to handle creation of bullets, enemies and particles
@@ -73,6 +77,8 @@ pub struct GameSettings {
 
     /// Radians per second
     pub ring_turn_rate: f64,
+
+    pub ring_move_speed: f64
 }
 
 impl Game {

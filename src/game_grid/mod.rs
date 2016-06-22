@@ -8,12 +8,12 @@ pub struct Point {
 
 pub fn reduce_radians(rad: f64) -> f64{
     return if rad < 0.0 {
-            rad + 2.0 * PI
-        } else if rad > 2.0 * PI {
-            rad - 2.0 * PI
-        } else {
-            rad
-        }
+        rad + 2.0 * PI
+    } else if rad > 2.0 * PI {
+        rad - 2.0 * PI
+    } else {
+        rad
+    }
 }
 
 impl Point {

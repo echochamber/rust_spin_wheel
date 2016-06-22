@@ -7,5 +7,5 @@ build = "build.rs"
 [dependencies]
 piston = "0.22.0"
 piston_window = "0.45.0"
-rand = "0.3.14"
 pistoncore-sdl2_window = "0.30.0"
+rand = "0.3.14"

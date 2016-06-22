@@ -26,7 +26,8 @@ fn main() {
         min_projectile_spawn_distance: 350.0,
         max_projectile_spawn_distance: 375.0,
         projectile_radius: 10.0,
-        ring_turn_rate: 1.0 * PI
+        ring_turn_rate: 1.0 * PI,
+        ring_move_speed: 40.0
     };
 
     // Create window
