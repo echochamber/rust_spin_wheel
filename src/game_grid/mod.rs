@@ -3,25 +3,24 @@ use std::f64::consts::PI;
 #[derive(Debug, Clone, Copy)]
 pub struct Point {
     pub x: f64,
-    pub y: f64
+    pub y: f64,
 }
 
-pub fn reduce_radians(rad: f64) -> f64{
+pub fn reduce_radians(rad: f64) -> f64 {
     return if rad < 0.0 {
         rad + 2.0 * PI
     } else if rad > 2.0 * PI {
         rad - 2.0 * PI
     } else {
         rad
-    }
+    };
 }
 
 impl Point {
-
     pub fn new_offset_polar(origin: &Point, r: f64, theta: f64) -> Point {
         Point {
             x: origin.x + r * theta.cos(),
-            y: origin.y + r * theta.sin()
+            y: origin.y + r * theta.sin(),
         }
     }
 
@@ -31,8 +30,7 @@ impl Point {
     }
 
     pub fn squared_distance_to(&self, p: &Point) -> f64 {
-        (self.x - p.x) * (self.x - p.x)
-        + (self.y - p.y) * (self.y - p.y)
+        (self.x - p.x) * (self.x - p.x) + (self.y - p.y) * (self.y - p.y)
     }
 }
 
@@ -40,10 +38,7 @@ impl Point {
 impl Into<Point> for (f64, f64) {
     fn into(self) -> Point {
         match self {
-            (x, y) => Point {
-                x: x,
-                y: y
-            }
+            (x, y) => Point { x: x, y: y },
         }
     }
 }
@@ -93,7 +88,6 @@ pub trait Moving: Velocity + Position {
 impl<T> Moving for T where T: Velocity + Position {}
 
 pub trait Turning: Velocity {
-
     /// Rate of turning in radians/second
     fn turn_rate(&self) -> f64;
     fn turn_rate_mut(&mut self) -> &mut f64;

@@ -27,14 +27,15 @@ fn main() {
         max_projectile_spawn_distance: 375.0,
         projectile_radius: 10.0,
         ring_turn_rate: 1.0 * PI,
-        ring_move_speed: 40.0
+        ring_move_speed: 40.0,
     };
 
     // Create window
     let window_size = settings.size + 200.0;
     let opengl = OpenGL::V3_2;
     let (width, height) = (window_size as u32, window_size as u32);
-    let mut window: PistonWindow<Sdl2Window> =  WindowSettings::new("spin_wheel_game", (width, height + 20))
+    let mut window: PistonWindow<Sdl2Window> = WindowSettings::new("spin_wheel_game",
+                                                                   (width, height + 20))
         .samples(4)
         .vsync(true)
         .exit_on_esc(true)
@@ -42,13 +43,12 @@ fn main() {
         .build()
         .unwrap();
 
-    // Create game 
+    // Create game
     let resource_path = current_exe().unwrap().parent().unwrap().to_owned().join("resources/");
     let resources = game::Resources {
-        font: RefCell::new(Glyphs::new(
-            &resource_path.join("fonts/FiraMono-Bold.ttf"),
-            window.factory.clone()
-        ).unwrap())
+        font: RefCell::new(Glyphs::new(&resource_path.join("fonts/FiraMono-Bold.ttf"),
+                                       window.factory.clone())
+            .unwrap()),
     };
 
     let mut game = game::Game::new(settings, resources);
@@ -64,9 +64,7 @@ fn main() {
             }
 
             Event::Render(_) => {
-                window.draw_2d(&e, |c, g| {
-                    game.render(c.trans(100.0, 100.0), g)
-                });
+                window.draw_2d(&e, |c, g| game.render(c.trans(100.0, 100.0), g));
             }
 
             Event::Update(args) => {

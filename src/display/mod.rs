@@ -4,7 +4,7 @@ const RED: Color = [1.0, 0.0, 0.0, 1.0];
 const GREEN: Color = [0.0, 1.0, 0.0, 1.0];
 const BLUE: Color = [0.0, 0.0, 1.0, 1.0];
 const YELLOW: Color = [1.0, 1.0, 0.0, 1.0];
-const ORANGE: Color =  [1.0, 0.5, 0.0, 1.0];
+const ORANGE: Color = [1.0, 0.5, 0.0, 1.0];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum GameColors {
@@ -12,7 +12,7 @@ pub enum GameColors {
     Green,
     Blue,
     Yellow,
-    Orange
+    Orange,
 }
 
 // (x, y) coordinates
@@ -23,7 +23,7 @@ impl Into<Color> for GameColors {
             GameColors::Green => GREEN,
             GameColors::Blue => BLUE,
             GameColors::Yellow => YELLOW,
-            GameColors::Orange => ORANGE
+            GameColors::Orange => ORANGE,
         }
     }
 }
